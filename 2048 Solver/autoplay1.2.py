@@ -18,7 +18,8 @@ REFERENCE_COLORS = {
     64: [226, 191, 134], # Tile '64'
     128: [217, 125, 229],# Tile '128'
     256: [102, 197, 135],# Tile '256'
-    512: [192, 194, 70]
+    512: [192, 194, 70],
+    1024: [99, 198, 189]
     # Add other tiles here as you calibrate them (e.g., 512, 1024, 2048, 4096)
     # Example: 512: [B_VAL, G_VAL, R_VAL],
 }
