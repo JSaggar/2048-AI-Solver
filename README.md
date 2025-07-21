@@ -28,7 +28,7 @@ Before you begin, ensure you have the following installed:
 3.  **Android Debug Bridge (ADB)**:
     * Download the platform-tools from the [Android Developers website](https://developer.android.com/tools/releases/platform-tools).
     * Extract the downloaded ZIP file to a convenient location (e.g., `C:\platform-tools`).
-    * **Crucially, add the `platform-tools` directory to your system's PATH environment variable**, or update the `ADB_PATH` variable in `autoplay1.2.py` to the full path of your `adb.exe` executable.
+    * **Crucially, add the `platform-tools` directory to your system's PATH environment variable**, or update the `ADB_PATH` variable in `autoplay1.2.py` (and `crop_find.py`, `color_calibration.py`) to the full path of your `adb.exe` executable.
     * **Enable USB Debugging on your Android device**: Go to `Settings` > `About phone` > tap `Build number` 7 times. Then go to `Developer options` and enable `USB debugging`.
     * **Authorize your device**: Connect your device via USB. On your device, you should see a pop-up asking to "Allow USB debugging". Check "Always allow from this computer" and tap "Allow".
     * **Verify ADB connection**: In your terminal, run `adb devices`. Your device should be listed as `device`.
@@ -39,6 +39,20 @@ Before you begin, ensure you have the following installed:
 * `game_logic.py`: Implements the fundamental 2048 game mechanics (tile movement, merging).
 * `autoplay1.2.py`: Handles screen capture, tile recognition (color-based), ADB commands, and orchestrates the AI's play.
 * `color_calibration.py` (or similar name): A temporary script used to calibrate the `REFERENCE_COLORS`.
+* `crop_find.py`: A utility script to help you find the correct screen coordinates for cropping the game board.
+
+## 📏 Calibrating Screen Coordinates (`crop_find.py`)
+
+Accurate screen coordinates (`x1, x2, y1, y2`) are vital for the AI to correctly identify and process the game board. Use `crop_find.py` to determine these values for your specific device and game layout.
+
+1.  **Run `crop_find.py`**:
+    ```bash
+    python crop_find.py
+    ```
+2.  **Capture Screenshot**: The script will first capture a screenshot from your connected Android device.
+3.  **Select Crop Area**: An OpenCV window will appear displaying the screenshot. **Click and drag your mouse** to draw a rectangle precisely around the 2048 game board (excluding score, menu, etc.).
+4.  **Get Coordinates**: Once you release the mouse button, the script will print the calculated `x1, x2, y1, y2` coordinates in your console.
+5.  **Update `autoplay1.2.py`**: Copy these printed coordinates and paste them into the `x1, x2, y1, y2` variables at the top of your `autoplay1.2.py` file.
 
 ## 🎨 Color Calibration (Essential Step!)
 
@@ -114,7 +128,7 @@ The AI employs an **Expectimax algorithm** to navigate the game's stochastic (ra
 * **Incorrect Tile Reading (Color-Based)**:
     * **Recalibrate `REFERENCE_COLORS`**: Colors can vary slightly between devices or game versions. Recalibrate all tile values carefully.
     * **Adjust `COLOR_MATCH_THRESHOLD`**: Fine-tune this value in `autoplay1.2.py`.
-    * **Verify `x1, x2, y1, y2` and `tile_w * 0.1` offsets**: Ensure your cropping accurately isolates the tile area without including borders or glare.
+    * **Verify `x1, x2, y1, y2` and `tile_w * 0.1` offsets**: Use `crop_find.py` to ensure your cropping accurately isolates the tile area without including borders or glare.
 * **AI makes bad moves / Fills up quickly**:
     * **Increase `MAX_DEPTH` in `ai_solver.py`**: A deeper search allows more foresight. Be mindful of performance.
     * **Refine `evaluate_board` heuristic**: Experiment with the weights of different factors (empty cells, monotonicity, smoothness, corner max tile) in `ai_solver.py` to better reflect optimal 2048 strategy.
